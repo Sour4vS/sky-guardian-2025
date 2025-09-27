@@ -6,9 +6,12 @@ import AQIGauge from "./AQIGauge";
 import AQIChart from "./AQIChart";
 import dashboardBg from "@/assets/dashboard-bg.jpg";
 
-const Dashboard = () => {
+interface DashboardProps {
+  location?: string;
+}
+
+const Dashboard = ({ location = "Kochi, Kerala" }: DashboardProps) => {
   const currentAQI = 142;
-  const location = "Kochi, Kerala";
   
   const getAQIStatus = (aqi: number) => {
     if (aqi <= 50) return { status: "Good", color: "bg-neon-green", textColor: "text-neon-green" };
