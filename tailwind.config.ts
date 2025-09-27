@@ -57,6 +57,26 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        // NASA space theme neon colors
+        neon: {
+          cyan: "hsl(var(--neon-cyan))",
+          blue: "hsl(var(--neon-blue))",
+          violet: "hsl(var(--neon-violet))",
+          green: "hsl(var(--neon-green))",
+        },
+      },
+      backgroundImage: {
+        'gradient-space': 'var(--gradient-space)',
+        'gradient-neon': 'var(--gradient-neon)',
+        'gradient-hero': 'var(--gradient-hero)',
+      },
+      boxShadow: {
+        'glow-cyan': 'var(--glow-cyan)',
+        'glow-violet': 'var(--glow-violet)',
+        'glow-strong': 'var(--glow-strong)',
+      },
+      transitionTimingFunction: {
+        'bounce': 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
       },
       borderRadius: {
         lg: "var(--radius)",
