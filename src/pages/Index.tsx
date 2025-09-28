@@ -8,6 +8,7 @@ import AboutSection from "@/components/AboutSection";
 import ImpactSection from "@/components/ImpactSection";
 import Footer from "@/components/Footer";
 import ChatBot from "@/components/ChatBot";
+import { GlobeButton } from "@/components/InteractiveGlobe";
 
 const Index = () => {
   const [selectedLocation, setSelectedLocation] = useState("Kochi, Kerala");
@@ -38,6 +39,9 @@ const Index = () => {
       
       {/* Floating Chatbot */}
       <ChatBot />
+      
+      {/* Floating Globe Button */}
+      <GlobeButton />
     </div>
   );
 };
