@@ -95,7 +95,7 @@ const HeroSection = () => {
             <Button
               variant="outline"
               size="lg"
-              className="border-white/30 text-white hover:text-white hover:bg-white/10 hover:border-white px-8 py-4 text-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all duration-300 pulse-neon"
+              className="border-white/30 text-white hover:text-white hover:bg-white/10 hover:border-white px-8 py-4 text-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all duration-300 pulse-neon-slow"
             >
               <BarChart3 className="w-5 h-5 mr-2" />
               View Dashboard
