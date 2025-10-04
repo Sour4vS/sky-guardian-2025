@@ -191,7 +191,7 @@ const Dashboard = ({ location = "Kochi, Kerala" }: DashboardProps) => {
             <CardHeader>
               <CardTitle className="text-2xl">7-Day AQI Trend</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-8 min-h-[400px]">
               <AQIChart />
             </CardContent>
           </Card>
