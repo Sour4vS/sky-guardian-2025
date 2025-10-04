@@ -209,7 +209,7 @@ All colors MUST be HSL.
   
   /* Pulse animation for important elements */
   .pulse-neon {
-    animation: pulse-neon 2s ease-in-out infinite;
+    animation: pulse-neon 4s ease-in-out infinite;
   }
   
   /* Slower pulse animation */
