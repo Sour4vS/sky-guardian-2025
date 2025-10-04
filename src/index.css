@@ -212,9 +212,9 @@ All colors MUST be HSL.
     animation: pulse-neon 4s ease-in-out infinite;
   }
   
-  /* Slower pulse animation */
+  /* Slower pulse animation with lower intensity */
   .pulse-neon-slow {
-    animation: pulse-neon 4s ease-in-out infinite;
+    animation: pulse-neon-slow 4s ease-in-out infinite;
   }
   
   @keyframes pulse-neon {
@@ -223,6 +223,15 @@ All colors MUST be HSL.
     }
     50% { 
       box-shadow: 0 0 30px hsl(var(--neon-cyan) / 0.6), 0 0 60px hsl(var(--neon-cyan) / 0.3);
+    }
+  }
+  
+  @keyframes pulse-neon-slow {
+    0%, 100% { 
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+    }
+    50% { 
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
     }
   }
 }
