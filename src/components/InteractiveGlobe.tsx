@@ -79,7 +79,7 @@ const DataMarker = ({ position, data, onHover }: any) => {
   );
 };
 
-// import { useMemo } from 'react';
+// Always use Blue Marble as fallback if GIBS layer fails
 const fallbackUrl = 'https://gibs.earthdata.nasa.gov/wmts/epsg4326/best/BlueMarble_ShadedRelief_Bathymetry/default/2023-10-04/250m/2/1/1.png';
 const Earth = ({ hoveredData }: { hoveredData: any }) => {
   const meshRef = useRef<any>(null);
@@ -89,18 +89,16 @@ const Earth = ({ hoveredData }: { hoveredData: any }) => {
   } else {
     gibsUrl = gibsUrl.replace('{Time}', '2023-10-04').replace('{TileMatrix}', '2').replace('{TileRow}', '1').replace('{TileCol}', '1');
   }
-  const [gibsTexture, setGibsTexture] = useState<any>(null);
+  const [useFallback, setUseFallback] = useState(false);
   const [gibsError, setGibsError] = useState(false);
-  // Always call useLoader, handle error in onError
-  const loadedTexture = useLoader(TextureLoader, gibsUrl, (texture) => {
-    setGibsTexture(texture);
-    setGibsError(false);
-  }, (err) => {
+  // Try to load the main GIBS layer, fallback to Blue Marble if it fails
+  const mainTexture = useLoader(TextureLoader, gibsUrl, undefined, (err) => {
+    setUseFallback(true);
     setGibsError(true);
-    setGibsTexture(null);
     // eslint-disable-next-line no-console
     console.error('Failed to load NASA GIBS imagery:', err);
   });
+  const fallbackTexture = useLoader(TextureLoader, fallbackUrl);
 
   useFrame(() => {
     if (meshRef.current && !hoveredData) {
@@ -111,10 +109,10 @@ const Earth = ({ hoveredData }: { hoveredData: any }) => {
   return (
     <group>
       <Sphere ref={meshRef} args={[2, 64, 64]}>
-        {/* Satellite imagery as texture if available */}
-        {(!gibsError && loadedTexture) ? (
+        {/* Satellite imagery as texture if available, fallback to Blue Marble */}
+        {(!useFallback && mainTexture) ? (
           <meshPhongMaterial
-            map={loadedTexture}
+            map={mainTexture}
             emissive="#1e40af"
             emissiveIntensity={0.1}
             shininess={100}
@@ -123,12 +121,12 @@ const Earth = ({ hoveredData }: { hoveredData: any }) => {
           />
         ) : (
           <meshPhongMaterial
-            color="#2563eb"
+            map={fallbackTexture}
             emissive="#1e40af"
             emissiveIntensity={0.1}
             shininess={100}
             transparent
-            opacity={0.9}
+            opacity={0.95}
           />
         )}
       </Sphere>
@@ -144,7 +142,7 @@ const Earth = ({ hoveredData }: { hoveredData: any }) => {
       {gibsError && (
         <Html center>
           <div className="bg-black/80 text-red-400 p-4 rounded-lg border border-red-500/50">
-            Failed to load NASA satellite imagery.
+            Failed to load NASA satellite imagery. Showing fallback.
           </div>
         </Html>
       )}
