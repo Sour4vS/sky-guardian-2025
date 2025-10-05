@@ -82,7 +82,7 @@ const organizationTypes = [
   { id: 'recreation', label: 'Parks & Recreation', icon: Users, description: 'Outdoor events and facilities' },
 ];
 
-const HealthAlertSystem = ({ currentAQI = 142, location = "Current Location" }) => {
+const HealthAlertSystem = ({ currentAQI = 75, location = "Current Location" }) => {
   const [preferences, setPreferences] = useState<AlertPreferences>(defaultPreferences);
   const [alerts, setAlerts] = useState<HealthAlert[]>([]);
   const [showSettings, setShowSettings] = useState(false);

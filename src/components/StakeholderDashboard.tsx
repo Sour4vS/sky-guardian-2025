@@ -27,7 +27,7 @@ interface StakeholderDashboardProps {
 
 const StakeholderDashboard = ({ 
   location = "Current Location", 
-  currentAQI = 142 
+  currentAQI = 75 
 }: StakeholderDashboardProps) => {
   const [activeTab, setActiveTab] = useState("schools");
 
@@ -49,10 +49,10 @@ const StakeholderDashboard = ({
   ];
 
   const healthcareMetrics = [
-    { metric: "Expected Respiratory Admissions", value: "+35%", trend: "up", color: "text-red-400" },
-    { metric: "Asthma-related Visits", value: "+28%", trend: "up", color: "text-orange-400" },
-    { metric: "COPD Exacerbations", value: "+42%", trend: "up", color: "text-red-400" },
-    { metric: "Cardiac Events", value: "+15%", trend: "up", color: "text-yellow-400" },
+    { metric: "Expected Respiratory Admissions", value: currentAQI > 100 ? "+35%" : "+8%", trend: "up", color: currentAQI > 100 ? "text-red-400" : "text-yellow-400" },
+    { metric: "Asthma-related Visits", value: currentAQI > 100 ? "+28%" : "+5%", trend: "up", color: currentAQI > 100 ? "text-orange-400" : "text-yellow-400" },
+    { metric: "COPD Exacerbations", value: currentAQI > 100 ? "+42%" : "+10%", trend: "up", color: currentAQI > 100 ? "text-red-400" : "text-orange-400" },
+    { metric: "Cardiac Events", value: currentAQI > 100 ? "+15%" : "+3%", trend: currentAQI > 80 ? "up" : "stable", color: currentAQI > 100 ? "text-yellow-400" : "text-green-400" },
   ];
 
   const emergencyProtocols = [
@@ -63,10 +63,10 @@ const StakeholderDashboard = ({
   ];
 
   const transportationImpacts = [
-    { system: "Public Transit", impact: "Reduced ridership expected", recommendation: "Increase ventilation" },
-    { system: "School Buses", impact: "Health concerns for students", recommendation: "Air filtration systems" },
-    { system: "Cargo Operations", impact: "Worker safety protocols", recommendation: "Limit outdoor exposure" },
-    { system: "Airport Operations", impact: "Visibility concerns", recommendation: "Monitor conditions" },
+    { system: "Public Transit", impact: currentAQI > 100 ? "Reduced ridership expected" : "Normal operations", recommendation: currentAQI > 100 ? "Increase ventilation" : "Regular maintenance" },
+    { system: "School Buses", impact: currentAQI > 100 ? "Health concerns for students" : "Standard precautions", recommendation: currentAQI > 100 ? "Air filtration systems" : "Monitor air quality" },
+    { system: "Cargo Operations", impact: currentAQI > 100 ? "Worker safety protocols" : "Normal operations", recommendation: currentAQI > 100 ? "Limit outdoor exposure" : "Standard safety measures" },
+    { system: "Airport Operations", impact: currentAQI > 100 ? "Visibility concerns" : "Normal visibility", recommendation: currentAQI > 100 ? "Monitor conditions" : "Routine operations" },
   ];
 
   return (

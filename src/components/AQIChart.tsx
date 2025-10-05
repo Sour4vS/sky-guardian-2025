@@ -2,13 +2,13 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tool
 import { ChartContainer, ChartTooltipContent } from "@/components/ui/chart";
 
 const data = [
-  { day: 'Mon', aqi: 85, predicted: false },
-  { day: 'Tue', aqi: 92, predicted: false },
-  { day: 'Wed', aqi: 118, predicted: false },
-  { day: 'Thu', aqi: 142, predicted: false },
-  { day: 'Fri', aqi: 156, predicted: true },
-  { day: 'Sat', aqi: 178, predicted: true },
-  { day: 'Sun', aqi: 165, predicted: true },
+  { day: 'Mon', aqi: 72, predicted: false },
+  { day: 'Tue', aqi: 68, predicted: false },
+  { day: 'Wed', aqi: 75, predicted: false },
+  { day: 'Thu', aqi: 82, predicted: false },
+  { day: 'Fri', aqi: 85, predicted: true },
+  { day: 'Sat', aqi: 78, predicted: true },
+  { day: 'Sun', aqi: 70, predicted: true },
 ];
 
 const chartConfig = {

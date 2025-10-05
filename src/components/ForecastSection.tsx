@@ -21,41 +21,52 @@ interface ForecastSectionProps {
 }
 
 const ForecastSection = ({ location }: ForecastSectionProps) => {
-  const forecastData: ForecastData[] = [
-    {
-      day: "Tomorrow",
-      date: "Oct 28",
-      aqi: 156,
-      status: "Unhealthy",
-      color: "bg-red-500",
-      textColor: "text-red-500",
-      weather: "Sunny, 28°C",
-      wind: "12 km/h SW",
-      alert: "Limit outdoor activities, especially for sensitive groups"
-    },
-    {
-      day: "Day 2",
-      date: "Oct 29",
-      aqi: 178,
-      status: "Unhealthy",
-      color: "bg-red-600",
-      textColor: "text-red-400",
-      weather: "Partly cloudy, 26°C",
-      wind: "8 km/h W",
-      alert: "Air quality is expected to worsen. Avoid outdoor exercise."
-    },
-    {
-      day: "Day 3",
-      date: "Oct 30",
-      aqi: 134,
-      status: "Unhealthy for Sensitive",
-      color: "bg-orange-500",
-      textColor: "text-orange-500",
-      weather: "Overcast, 24°C",
-      wind: "15 km/h NW",
-      alert: "Improving conditions expected due to wind patterns"
-    }
-  ];
+  // Generate location-specific forecast data
+  const generateForecastData = (location: string): ForecastData[] => {
+    const today = new Date();
+    const baseAQI = location.toLowerCase().includes('kochi') ? 85 : 
+                   location.toLowerCase().includes('thiruvananthapuram') ? 75 :
+                   location.toLowerCase().includes('palakkad') ? 65 :
+                   location.toLowerCase().includes('kozhikode') ? 80 : 70;
+    
+    return [
+      {
+        day: "Tomorrow",
+        date: new Date(today.getTime() + 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        aqi: baseAQI + Math.floor(Math.random() * 20 - 10),
+        status: baseAQI < 50 ? "Good" : baseAQI < 100 ? "Moderate" : "Unhealthy for Sensitive",
+        color: baseAQI < 50 ? "bg-green-500" : baseAQI < 100 ? "bg-yellow-500" : "bg-orange-500",
+        textColor: baseAQI < 50 ? "text-green-500" : baseAQI < 100 ? "text-yellow-500" : "text-orange-500",
+        weather: "Partly cloudy, 29°C",
+        wind: "8 km/h SW",
+        alert: baseAQI > 80 ? "Sensitive individuals should limit outdoor activities" : "Good conditions for outdoor activities"
+      },
+      {
+        day: "Day 2", 
+        date: new Date(today.getTime() + 2 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        aqi: baseAQI + Math.floor(Math.random() * 30 - 15),
+        status: (baseAQI + 10) < 50 ? "Good" : (baseAQI + 10) < 100 ? "Moderate" : "Unhealthy for Sensitive",
+        color: (baseAQI + 10) < 50 ? "bg-green-500" : (baseAQI + 10) < 100 ? "bg-yellow-500" : "bg-orange-500",
+        textColor: (baseAQI + 10) < 50 ? "text-green-500" : (baseAQI + 10) < 100 ? "text-yellow-500" : "text-orange-500",
+        weather: "Sunny, 31°C",
+        wind: "12 km/h W",
+        alert: "Conditions may vary due to local weather patterns"
+      },
+      {
+        day: "Day 3",
+        date: new Date(today.getTime() + 3 * 24 * 60 * 60 * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        aqi: Math.max(40, baseAQI - Math.floor(Math.random() * 20)),
+        status: (baseAQI - 10) < 50 ? "Good" : (baseAQI - 10) < 100 ? "Moderate" : "Unhealthy for Sensitive",
+        color: (baseAQI - 10) < 50 ? "bg-green-500" : (baseAQI - 10) < 100 ? "bg-yellow-500" : "bg-orange-500",
+        textColor: (baseAQI - 10) < 50 ? "text-green-500" : (baseAQI - 10) < 100 ? "text-yellow-500" : "text-orange-500",
+        weather: "Cloudy, 27°C",
+        wind: "15 km/h NW",
+        alert: "Improving air quality expected due to wind patterns"
+      }
+    ];
+  };
+
+  const forecastData = generateForecastData(location);
 
   return (
     <section className="py-12">

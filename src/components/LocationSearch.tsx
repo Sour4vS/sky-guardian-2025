@@ -13,6 +13,23 @@ interface LocationSearchProps {
 const LocationSearch = ({ onLocationSelect, currentLocation }: LocationSearchProps) => {
   const [searchValue, setSearchValue] = useState("");
   const [isSearching, setIsSearching] = useState(false);
+  const keralaLocations = [
+    'Thiruvananthapuram',
+    'Kollam',
+    'Pathanamthitta',
+    'Alappuzha',
+    'Kottayam',
+    'Idukki',
+    'Ernakulam',
+    'Kochi, Kerala',
+    'Thrissur',
+    'Palakkad',
+    'Malappuram',
+    'Kozhikode',
+    'Wayanad',
+    'Kannur',
+    'Kasaragod',
+  ];
 
   const handleSearch = async () => {
     if (!searchValue.trim()) return;
@@ -44,19 +61,24 @@ const LocationSearch = ({ onLocationSelect, currentLocation }: LocationSearchPro
             <MapPin className="w-5 h-5 text-neon-cyan" />
             <span className="text-sm text-muted-foreground">Current location: {currentLocation}</span>
           </div>
-          
-          <div className="flex gap-3">
+          <div className="flex gap-3 items-center">
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Enter city name (e.g., Delhi, Mumbai, Bangalore)"
+                placeholder="Enter city name (Kerala districts supported)"
                 value={searchValue}
                 onChange={(e) => setSearchValue(e.target.value)}
                 onKeyPress={handleKeyPress}
                 className="pl-10 bg-background/50 border-border/50 focus:border-neon-cyan/50 focus:ring-neon-cyan/20"
                 disabled={isSearching}
+                list="kerala-locations"
               />
+              <datalist id="kerala-locations">
+                {keralaLocations.map((loc) => (
+                  <option key={loc} value={loc} />
+                ))}
+              </datalist>
             </div>
             <Button 
               onClick={handleSearch}

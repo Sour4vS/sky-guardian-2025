@@ -19,6 +19,33 @@ interface HealthGuidanceProps {
 }
 
 const HealthGuidance = ({ currentAQI, location }: HealthGuidanceProps) => {
+  // Get location-specific context for Kerala
+  const getLocationContext = (location: string) => {
+    if (location.toLowerCase().includes('kochi')) {
+      return {
+        context: "Urban coastal area with industrial activity",
+        localFactors: ["Traffic pollution", "Industrial emissions", "Sea breeze helps dispersion"]
+      };
+    } else if (location.toLowerCase().includes('palakkad')) {
+      return {
+        context: "Agricultural region with moderate urbanization", 
+        localFactors: ["Agricultural burning", "Dust from farming", "Hill winds improve air quality"]
+      };
+    } else if (location.toLowerCase().includes('thiruvananthapuram')) {
+      return {
+        context: "State capital with moderate traffic",
+        localFactors: ["Vehicle emissions", "Construction dust", "Coastal winds help"]
+      };
+    } else {
+      return {
+        context: "Kerala region",
+        localFactors: ["Monsoon patterns", "Vegetation cover", "Coastal climate"]
+      };
+    }
+  };
+
+  const locationInfo = getLocationContext(location);
+
   const getHealthAdvice = (aqi: number) => {
     if (aqi <= 50) {
       return {
@@ -158,6 +185,34 @@ const HealthGuidance = ({ currentAQI, location }: HealthGuidanceProps) => {
             </Badge>
           </AlertDescription>
         </Alert>
+      </motion.div>
+
+      {/* Location-Specific Information */}
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.5 }}
+        viewport={{ once: true }}
+      >
+        <Card className="glass-card hover-glow mb-8 border-neon-cyan/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-neon-cyan">
+              <Shield className="w-6 h-6" />
+              Local Factors for {location}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p className="text-muted-foreground mb-4">{locationInfo.context}</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {locationInfo.localFactors.map((factor, index) => (
+                <div key={index} className="flex items-center gap-2 p-3 bg-muted/10 rounded-lg">
+                  <div className="w-2 h-2 rounded-full bg-neon-cyan"></div>
+                  <span className="text-sm">{factor}</span>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </motion.div>
 
       {/* Health Groups */}

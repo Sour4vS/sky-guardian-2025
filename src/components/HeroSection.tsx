@@ -1,7 +1,16 @@
+
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Sparkles, Globe, BarChart3 } from "lucide-react";
 import heroImage from "@/assets/hero-space-earth.jpg";
+
+// Smooth scroll helper
+function scrollToId(id: string) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth" });
+  }
+}
 
 const HeroSection = () => {
   return (
@@ -87,15 +96,16 @@ const HeroSection = () => {
             <Button
               size="lg"
               className="bg-gradient-neon hover:bg-gradient-neon/90 text-background font-semibold px-8 py-4 text-lg hover-glow pulse-neon group"
+              onClick={() => scrollToId("location-search-section")}
             >
               <Globe className="w-5 h-5 mr-2 group-hover:animate-spin" />
               Check My Air Quality
             </Button>
-            
             <Button
               variant="outline"
               size="lg"
               className="border-white/30 text-white hover:text-white hover:bg-white/10 hover:border-white px-8 py-4 text-lg hover:shadow-[0_0_30px_rgba(255,255,255,0.6)] transition-all duration-300 pulse-neon-slow"
+              onClick={() => scrollToId("dashboard-section")}
             >
               <BarChart3 className="w-5 h-5 mr-2" />
               View Dashboard
@@ -125,16 +135,7 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Scroll Indicator */}
-      <motion.div
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
-        animate={{ y: [0, 10, 0] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      >
-        <div className="w-1 h-12 border border-neon-cyan rounded-full flex justify-center">
-          <div className="w-0.5 h-3 bg-neon-cyan rounded-full mt-2"></div>
-        </div>
-      </motion.div>
+      {/* Scroll Indicator removed as requested */}
     </section>
   );
 };
