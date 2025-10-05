@@ -14,13 +14,46 @@ import ChatBot from "@/components/ChatBot";
 import { GlobeButton } from "@/components/InteractiveGlobe";
 
 const Index = () => {
-  const [selectedLocation, setSelectedLocation] = useState("");
-  const [coordinates, setCoordinates] = useState<{ lat: number; lng: number } | null>(null);
+  const [selectedLocation, setSelectedLocation] = useState("Kochi, Kerala");
+  const [coordinates, setCoordinates] = useState({ lat: 9.9312, lng: 76.2673 });
   const [geoPrompted, setGeoPrompted] = useState(false);
-  const currentAQI = 0; // Will be set from API
-  // On first load, prompt for geolocation
+  
+  // Generate location-specific AQI
+  const getCurrentAQI = (location: string): number => {
+    if (location.toLowerCase().includes('kochi')) return 85;
+    if (location.toLowerCase().includes('thiruvananthapuram')) return 75;
+    if (location.toLowerCase().includes('palakkad')) return 65;
+    if (location.toLowerCase().includes('kozhikode')) return 80;
+    if (location.toLowerCase().includes('thrissur')) return 70;
+    if (location.toLowerCase().includes('kollam')) return 78;
+    if (location.toLowerCase().includes('kannur')) return 68;
+    return 72; // Default for other Kerala locations
+  };
+
+  const currentAQI = getCurrentAQI(selectedLocation);
+
+  // Kerala locations with coordinates
+  const keralaLocations = [
+    { city: 'Thiruvananthapuram', lat: 8.5241, lng: 76.9366 },
+    { city: 'Kollam', lat: 8.8932, lng: 76.6141 },
+    { city: 'Pathanamthitta', lat: 9.2646, lng: 76.7874 },
+    { city: 'Alappuzha', lat: 9.4981, lng: 76.3388 },
+    { city: 'Kottayam', lat: 9.5916, lng: 76.5222 },
+    { city: 'Idukki', lat: 9.849, lng: 77.0995 },
+    { city: 'Ernakulam', lat: 9.9816, lng: 76.2999 },
+    { city: 'Kochi, Kerala', lat: 9.9312, lng: 76.2673 },
+    { city: 'Thrissur', lat: 10.5276, lng: 76.2144 },
+    { city: 'Palakkad', lat: 10.7867, lng: 76.6548 },
+    { city: 'Malappuram', lat: 11.0734, lng: 76.0884 },
+    { city: 'Kozhikode', lat: 11.2588, lng: 75.7804 },
+    { city: 'Wayanad', lat: 11.6854, lng: 76.1311 },
+    { city: 'Kannur', lat: 11.8745, lng: 75.3704 },
+    { city: 'Kasaragod', lat: 12.499, lng: 74.9901 },
+  ];
+
+  // On first load, try to get user location but don't force it
   useEffect(() => {
-    if (!geoPrompted && !selectedLocation && !coordinates) {
+    if (!geoPrompted && selectedLocation === "Kochi, Kerala") {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (pos) => {
@@ -30,19 +63,38 @@ const Index = () => {
             setGeoPrompted(true);
           },
           (err) => {
-            setGeoPrompted(true); // User denied or error
+            setGeoPrompted(true); // User denied or error, keep default location
           }
         );
       } else {
         setGeoPrompted(true);
       }
     }
-  }, [geoPrompted, selectedLocation, coordinates]);
+  }, [geoPrompted, selectedLocation]);
 
   const handleLocationSelect = (location: string, coords?: { lat: number; lng: number }) => {
     setSelectedLocation(location);
+    
     if (coords) {
       setCoordinates(coords);
+    } else {
+      // Try to match Kerala location
+      const keralaMatch = keralaLocations.find(l => l.city.toLowerCase() === location.toLowerCase());
+      if (keralaMatch) {
+        setCoordinates({ lat: keralaMatch.lat, lng: keralaMatch.lng });
+        return;
+      }
+      // Fallback to demo world cities
+      const locationCoords: { [key: string]: { lat: number; lng: number } } = {
+        "New York, NY": { lat: 40.7128, lng: -74.0060 },
+        "Los Angeles, CA": { lat: 34.0522, lng: -118.2437 },
+        "London, UK": { lat: 51.5074, lng: -0.1278 },
+        "Tokyo, Japan": { lat: 35.6762, lng: 139.6503 },
+        "Sydney, Australia": { lat: -33.8688, lng: 151.2093 }
+      };
+      if (locationCoords[location]) {
+        setCoordinates(locationCoords[location]);
+      }
     }
   };
 
@@ -50,48 +102,33 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <HeroSection />
       
-      <div className="container mx-auto px-6">
-        {/* Always show location search */}
+      <div id="location-search-section" className="container mx-auto px-6">
         <LocationSearch 
           onLocationSelect={handleLocationSelect}
           currentLocation={selectedLocation}
         />
       </div>
-      
-      {/* NASA-Powered Dashboard */}
-      {selectedLocation || coordinates ? (
-        <NASADashboard location={selectedLocation} coordinates={coordinates} />
-      ) : (
-        <div className="text-center text-muted-foreground py-8">Please allow location access or enter your city to see NASA-powered data.</div>
-      )}
 
+      {/* NASA-Powered Dashboard */}
+      <div id="dashboard-section">
+        <NASADashboard location={selectedLocation} coordinates={coordinates} />
+      </div>
+      
       {/* Health Alert System */}
       <section className="py-20 bg-gradient-to-b from-background to-gray-900">
         <div className="container mx-auto px-6">
-          {selectedLocation || coordinates ? (
-            <HealthAlertSystem currentAQI={currentAQI} location={selectedLocation} />
-          ) : (
-            <div className="text-center text-muted-foreground py-4">Enter your location to see health alerts.</div>
-          )}
+          <HealthAlertSystem currentAQI={currentAQI} location={selectedLocation} />
         </div>
       </section>
 
       {/* Stakeholder-Specific Dashboard */}
-      {selectedLocation || coordinates ? (
-        <StakeholderDashboard location={selectedLocation} currentAQI={currentAQI} />
-      ) : null}
+      <StakeholderDashboard location={selectedLocation} currentAQI={currentAQI} />
 
       {/* Original Dashboard for comparison */}
-      {selectedLocation || coordinates ? (
-        <Dashboard location={selectedLocation} />
-      ) : null}
-
-      {selectedLocation || coordinates ? (
-        <ForecastSection location={selectedLocation} />
-      ) : null}
-      {selectedLocation || coordinates ? (
-        <HealthGuidance currentAQI={currentAQI} location={selectedLocation} />
-      ) : null}
+      <Dashboard location={selectedLocation} coordinates={coordinates} />
+      
+      <ForecastSection location={selectedLocation} />
+      <HealthGuidance currentAQI={currentAQI} location={selectedLocation} />
       <AboutSection />
       <ImpactSection />
       <Footer />
