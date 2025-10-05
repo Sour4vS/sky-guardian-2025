@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import HeroSection from "@/components/HeroSection";
 import LocationSearch from "@/components/LocationSearch";
 import Dashboard from "@/components/Dashboard";
@@ -16,6 +16,7 @@ import { GlobeButton } from "@/components/InteractiveGlobe";
 const Index = () => {
   const [selectedLocation, setSelectedLocation] = useState("Kochi, Kerala");
   const [coordinates, setCoordinates] = useState({ lat: 9.9312, lng: 76.2673 });
+  const [geoPrompted, setGeoPrompted] = useState(false);
   
   // Generate location-specific AQI
   const getCurrentAQI = (location: string): number => {
@@ -31,7 +32,7 @@ const Index = () => {
 
   const currentAQI = getCurrentAQI(selectedLocation);
 
-  // Kerala mock locations
+  // Kerala locations with coordinates
   const keralaLocations = [
     { city: 'Thiruvananthapuram', lat: 8.5241, lng: 76.9366 },
     { city: 'Kollam', lat: 8.8932, lng: 76.6141 },
@@ -50,24 +51,50 @@ const Index = () => {
     { city: 'Kasaragod', lat: 12.499, lng: 74.9901 },
   ];
 
-  const handleLocationSelect = (location: string) => {
-    setSelectedLocation(location);
-    // Try to match Kerala location
-    const keralaMatch = keralaLocations.find(l => l.city.toLowerCase() === location.toLowerCase());
-    if (keralaMatch) {
-      setCoordinates({ lat: keralaMatch.lat, lng: keralaMatch.lng });
-      return;
+  // On first load, try to get user location but don't force it
+  useEffect(() => {
+    if (!geoPrompted && selectedLocation === "Kochi, Kerala") {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            setCoordinates({ lat: latitude, lng: longitude });
+            setSelectedLocation("Your Location");
+            setGeoPrompted(true);
+          },
+          (err) => {
+            setGeoPrompted(true); // User denied or error, keep default location
+          }
+        );
+      } else {
+        setGeoPrompted(true);
+      }
     }
-    // Fallback to demo world cities
-    const locationCoords: { [key: string]: { lat: number; lng: number } } = {
-      "New York, NY": { lat: 40.7128, lng: -74.0060 },
-      "Los Angeles, CA": { lat: 34.0522, lng: -118.2437 },
-      "London, UK": { lat: 51.5074, lng: -0.1278 },
-      "Tokyo, Japan": { lat: 35.6762, lng: 139.6503 },
-      "Sydney, Australia": { lat: -33.8688, lng: 151.2093 }
-    };
-    if (locationCoords[location]) {
-      setCoordinates(locationCoords[location]);
+  }, [geoPrompted, selectedLocation]);
+
+  const handleLocationSelect = (location: string, coords?: { lat: number; lng: number }) => {
+    setSelectedLocation(location);
+    
+    if (coords) {
+      setCoordinates(coords);
+    } else {
+      // Try to match Kerala location
+      const keralaMatch = keralaLocations.find(l => l.city.toLowerCase() === location.toLowerCase());
+      if (keralaMatch) {
+        setCoordinates({ lat: keralaMatch.lat, lng: keralaMatch.lng });
+        return;
+      }
+      // Fallback to demo world cities
+      const locationCoords: { [key: string]: { lat: number; lng: number } } = {
+        "New York, NY": { lat: 40.7128, lng: -74.0060 },
+        "Los Angeles, CA": { lat: 34.0522, lng: -118.2437 },
+        "London, UK": { lat: 51.5074, lng: -0.1278 },
+        "Tokyo, Japan": { lat: 35.6762, lng: 139.6503 },
+        "Sydney, Australia": { lat: -33.8688, lng: 151.2093 }
+      };
+      if (locationCoords[location]) {
+        setCoordinates(locationCoords[location]);
+      }
     }
   };
 
@@ -75,7 +102,6 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <HeroSection />
       
-
       <div id="location-search-section" className="container mx-auto px-6">
         <LocationSearch 
           onLocationSelect={handleLocationSelect}
@@ -94,10 +120,10 @@ const Index = () => {
           <HealthAlertSystem currentAQI={currentAQI} location={selectedLocation} />
         </div>
       </section>
-      
+
       {/* Stakeholder-Specific Dashboard */}
       <StakeholderDashboard location={selectedLocation} currentAQI={currentAQI} />
-      
+
       {/* Original Dashboard for comparison */}
       <Dashboard location={selectedLocation} coordinates={coordinates} />
       
