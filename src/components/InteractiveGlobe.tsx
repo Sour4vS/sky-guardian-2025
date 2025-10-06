@@ -112,7 +112,7 @@ const Earth = ({ hoveredData }: { hoveredData: any }) => {
         {/* Satellite imagery as texture if available, fallback to Blue Marble */}
         {(!useFallback && mainTexture) ? (
           <meshPhongMaterial
-            map={mainTexture}
+            map={Array.isArray(mainTexture) ? mainTexture[0] : mainTexture}
             emissive="#1e40af"
             emissiveIntensity={0.1}
             shininess={100}
@@ -121,7 +121,7 @@ const Earth = ({ hoveredData }: { hoveredData: any }) => {
           />
         ) : (
           <meshPhongMaterial
-            map={fallbackTexture}
+            map={Array.isArray(fallbackTexture) ? fallbackTexture[0] : fallbackTexture}
             emissive="#1e40af"
             emissiveIntensity={0.1}
             shininess={100}
